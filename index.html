@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0A192F">
+    <title>BioData Campo • PSICOSEV</title>
+
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="./assets/biodata-icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./assets/biodata-icon-512.png">
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy-deep: #0A192F;
+            --navy-light: #112240;
+            --navy-card: #1D2A44;
+            --border-color: #344054;
+            --purple-psicosev: #7F56D9;
+            --lilac-psicosev: #9E77ED;
+            --accent-lila: #D1C4E9;
+            --text-light: #F4F3FF;
+            --text-light-secondary: #D0D5DD;
+            --error-color: #F84F4F;
+            --success-color: #4CAF50;
+            --gray-clean: #475467;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--navy-deep);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        /* Header Corporativo */
+        header {
+            background-color: var(--navy-light);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--lilac-psicosev);
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #FFFFFF;
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--text-light-secondary);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: var(--text-light-secondary);
+        }
+
+        .settings-btn.active {
+            background-color: rgba(127, 86, 217, 0.3);
+            color: var(--lilac-psicosev);
+        }
+
+        /* Contenido Principal con scrolling suave */
+        main {
+            flex: 1;
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Panel Configuración Colapsible */
+        .config-panel {
+            background-color: var(--navy-light);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .config-panel.open {
+            display: flex;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .panel-desc {
+            font-size: 11px;
+            color: var(--text-light-secondary);
+            line-height: 15px;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-field {
+            background-color: var(--navy-deep);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            color: #FFFFFF;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.23s ease;
+            width: 100%;
+        }
+
+        .input-field:focus {
+            border-color: var(--purple-psicosev);
+            box-shadow: 0 0 0 2px rgba(127, 86, 217, 0.25);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light-secondary);
+        }
+
+        .save-btn {
+            background-color: var(--purple-psicosev);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.23s ease;
+            align-self: flex-end;
+            font-size: 12px;
+        }
+
+        .save-btn:active {
+            transform: scale(0.97);
+            background-color: #6941C6;
+        }
+
+        /* Tarjeta de Captura de Foto */
+        .card {
+            background-color: var(--navy-light);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .preview-box {
+            width: 100%;
+            height: 220px;
+            background-color: rgba(29, 42, 68, 0.5);
+            border-radius: 12px;
+            border: 1px dashed var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .preview-box.has-img {
+            border-style: solid;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview-placeholder p {
+            font-size: 10px;
+            color: var(--text-light-secondary);
+            line-height: 14px;
+            max-width: 250px;
+        }
+
+        .compression-tag {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            padding: 8px 12px;
+            font-size: 10px;
+            color: var(--text-light-secondary);
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .page-status {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background-color: rgba(127, 86, 217, 0.14);
+            border: 1px solid rgba(158, 119, 237, 0.35);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: var(--text-light-secondary);
+            font-size: 11px;
+            line-height: 15px;
+        }
+
+        .page-status strong {
+            color: #FFFFFF;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Botones de Acción Móviles */
+        .primary-btn {
+            background-color: var(--purple-psicosev);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.23s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            height: 48px;
+        }
+
+        .primary-btn:active {
+            transform: scale(0.97);
+            background-color: #6941C6;
+        }
+
+        .outline-btn {
+            background: none;
+            border: 1.5px solid var(--lilac-psicosev);
+            color: var(--lilac-psicosev);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.23s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            height: 48px;
+        }
+
+        .outline-btn:active {
+            transform: scale(0.97);
+            background-color: rgba(158, 119, 237, 0.1);
+        }
+
+        /* Botón de Digitalizar Grande */
+        .action-main-btn {
+            width: 100%;
+            height: 52px;
+            background-color: var(--purple-psicosev);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.23s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(127, 86, 217, 0.4);
+        }
+
+        .action-main-btn:disabled {
+            background-color: rgba(127, 86, 217, 0.3);
+            color: rgba(255,255,255,0.4);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .action-main-btn:active:not(:disabled) {
+            transform: scale(0.97);
+            background-color: #6941C6;
+        }
+
+        /* Caja de Texto Extracción */
+        .text-area-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .char-counter {
+            background-color: rgba(127, 86, 217, 0.2);
+            color: var(--accent-lila);
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .textarea-cv {
+            width: 100%;
+            height: 200px;
+            background-color: var(--navy-deep);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-light);
+            font-family: 'JetBrains Mono', Courier, monospace;
+            font-size: 13px;
+            line-height: 18px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.23s ease;
+        }
+
+        .textarea-cv:focus {
+            border-color: var(--purple-psicosev);
+        }
+
+        .tip-desc {
+            font-size: 10px;
+            color: var(--text-light-secondary);
+            line-height: 14px;
+        }
+
+        /* Contenedor de Flujo de Cierre Móvil */
+        .closure-container {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .closure-btn {
+            height: 56px;
+            background-color: #C3B1E1;
+            color: var(--navy-deep);
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.23s ease;
+            box-shadow: 0 4px 12px rgba(195, 177, 225, 0.3);
+            flex: 2;
+        }
+
+        .closure-btn:disabled {
+            background-color: #344054;
+            color: rgba(255,255,255,0.3);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .closure-btn:active:not(:disabled) {
+            transform: scale(0.97);
+            background-color: #A996CB;
+        }
+
+        .reset-btn {
+            height: 56px;
+            background-color: var(--gray-clean);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.23s ease;
+            flex: 1;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.97);
+            background-color: #344054;
+        }
+
+        /* Overlay loader */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(158, 119, 237, 0.1);
+            border-top: 4px solid var(--lilac-psicosev);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .loading-subtext {
+            font-size: 11px;
+            color: var(--text-light-secondary);
+            text-align: center;
+        }
+
+        /* Estado Clave Indicador */
+        .key-indicator {
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .key-indicator.success { color: #4CAF50; }
+        .key-indicator.danger { color: #F84F4F; }
+        .key-indicator.warning { color: var(--accent-lila); }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-group">
+            <div class="logo-title-wrap">
+                <div class="logo-dot"></div>
+                <h1 class="logo-text">PSICOSEV</h1>
+            </div>
+            <p class="logo-sub">Ecosistema BioData Talent • Campo</p>
+        </div>
+        
+        <button class="settings-btn" id="settingsToggleBtn" onclick="toggleConfigPanel()" title="Configuración">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
+    </header>
+
+    <main>
+        
+        <section class="config-panel" id="configPanel">
+            <div class="panel-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lilac-psicosev)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Credenciales del Consultor</span>
+            </div>
+            <p class="panel-desc">Para procesar CVs con Inteligencia Artificial, introduce tu clave personal de Gemini. Se guarda solo en este navegador; usa un celular controlado y no compartas el archivo con la clave escrita.</p>
+            
+            <div class="input-group">
+                <input type="password" id="apiKeyInput" class="input-field" placeholder="AIzaSy...">
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                    <svg id="passEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="keyStatusLabel" class="key-indicator warning">⚠️ Sin clave almacenada</span>
+                <div style="display: flex; gap: 8px;">
+                    <button class="save-btn" onclick="clearApiKey()" style="background-color: #344054;">Borrar</button>
+                    <button class="save-btn" onclick="saveApiKey()">Guardar Clave</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--lilac-psicosev)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                <span>Digitalización Física de CV</span>
+            </div>
+            
+            <div class="preview-box" id="previewBox">
+                <img id="previewImage" class="preview-img" alt="Vista previa del CV impreso">
+                
+                <div class="preview-placeholder" id="previewPlaceholder">
+                    <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="var(--lilac-psicosev)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <h3 style="font-size: 13px; font-weight: 700; color: #FFFFFF;">Sin CV Capturado</h3>
+                    <p>Toma una foto clara a la hoja de vida impresa del candidato o selecciónala de tu galería móvil.</p>
+                </div>
+
+                <div class="compression-tag" id="compressionTag">
+                    <span style="font-weight: 700; color: #FFFFFF;">Captura guardada con éxito</span>
+                    <span id="compressionDetails">Comprimiendo imagen...</span>
+                </div>
+            </div>
+
+            <div class="page-status" id="pageStatus">
+                <span><strong id="pageCountLabel">0 paginas</strong> listas para digitalizar</span>
+                <span id="pageHintLabel">Puedes agregar mas fotos si el CV tiene varias hojas.</span>
+            </div>
+
+            <div class="btn-row">
+                <button class="primary-btn" onclick="triggerFileInput('camera')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span>Cámara</span>
+                </button>
+                <button class="outline-btn" onclick="triggerFileInput('gallery')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <span>Galería</span>
+                </button>
+            </div>
+
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImageLoaded(this)">
+            <input type="file" id="galleryInput" accept="image/*" multiple style="display: none;" onchange="handleImageLoaded(this)">
+        </section>
+
+        <button class="action-main-btn" id="digitizeBtn" onclick="processCVImage()" disabled>
+            ▶️ DIGITALIZAR HOJA DE VIDA
+        </button>
+
+        <section class="card">
+            <div class="text-area-label-row">
+                <div class="card-header" style="padding-bottom: 0;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--lilac-psicosev)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path>
+                    </svg>
+                    <span>Revisión y Extracción</span>
+                </div>
+                <span class="char-counter" id="charCounter">0 caracteres</span>
+            </div>
+
+            <textarea class="textarea-cv" id="cvTextarea" placeholder="El texto digitalizado del currículum por la Inteligencia Artificial aparecerá aquí. Podrás editarlo directamente si necesitas realizar ajustes de tipografía o formato." oninput="updateCharCount()"></textarea>
+            <p class="tip-desc">💡 Consejo: Corrige cualquier error de tipografía directamente en la caja de texto antes de transferir por correo.</p>
+        </section>
+
+        <div class="closure-container">
+            <button class="closure-btn" id="sendMailBtn" onclick="triggerEmailCompose()" disabled>
+                ✉️ Enviar a BioData Mail
+            </button>
+            <button class="reset-btn" id="quickResetBtn" onclick="executeQuickReset()" title="Limpiar todo y nuevo candidato">
+                🔄 Limpiar
+            </button>
+        </div>
+
+    </main>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Procesando imagen local...</div>
+        <div class="loading-subtext">Conectando con la Inteligencia Artificial de PSICOSEV...</div>
+    </div>
+
+    <canvas id="hiddenCanvas" style="display: none;"></canvas>
+
+    <script>
+        // Variables de estado
+        let activeBase64Image = null;
+        let activeCvPages = [];
+        const MAX_CV_PAGES = 5;
+        const GEMINI_API_KEY_PLACEHOLDER = "${BuildConfig.GEMINI_API_KEY}";
+
+        function isUsableGeminiKey(key) {
+            return Boolean(
+                key &&
+                key.trim().startsWith('AIza') &&
+                key.trim().length >= 30 &&
+                !key.includes('${') &&
+                !key.includes('MY_GEMINI_API')
+            );
+        }
+
+        function getSavedApiKey() {
+            const savedKey = localStorage.getItem('biodata_gemini_api_key_pref') || "";
+            return isUsableGeminiKey(savedKey) ? savedKey.trim() : "";
+        }
+
+        function getInjectedDevKey() {
+            return isUsableGeminiKey(GEMINI_API_KEY_PLACEHOLDER) ? GEMINI_API_KEY_PLACEHOLDER.trim() : "";
+        }
+
+        // Carga inicial y persistencia automática de clave Gemini
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = getSavedApiKey();
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+                updateKeyStatusIndicator(savedKey);
+            } else {
+                const devKey = getInjectedDevKey();
+                if (devKey) {
+                    updateKeyStatusIndicator("", true);
+                } else {
+                    toggleConfigPanel();
+                }
+            }
+            updateCaptureStatus();
+        });
+
+        function toggleConfigPanel() {
+            const panel = document.getElementById('configPanel');
+            const btn = document.getElementById('settingsToggleBtn');
+            panel.classList.toggle('open');
+            btn.classList.toggle('active');
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('apiKeyInput');
+            const icon = document.getElementById('passEyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = `
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                    <path d="M9 9a3 3 0 1 1-4.24-4.24"></path>
+                    <path d="M12 15a3 3 0 1 1-3-3"></path>
+                    <path d="M17.6 17.6A10.45 10.45 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-3.24-3.24"></path>
+                `;
+            } else {
+                input.type = 'password';
+                icon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
+        }
+
+        function saveApiKey() {
+            const keyVal = document.getElementById('apiKeyInput').value.trim();
+            if (!isUsableGeminiKey(keyVal)) {
+                alert("La clave no parece valida. Debe iniciar con AIza y no puede estar vacia.");
+                updateKeyStatusIndicator("");
+                return;
+            }
+            localStorage.setItem('biodata_gemini_api_key_pref', keyVal);
+            updateKeyStatusIndicator(keyVal);
+            alert("Clave de Gemini guardada en este navegador. Mantén este celular bajo control y borra la clave si prestas el equipo.");
+            toggleConfigPanel();
+        }
+
+        function clearApiKey() {
+            localStorage.removeItem('biodata_gemini_api_key_pref');
+            document.getElementById('apiKeyInput').value = "";
+            updateKeyStatusIndicator("");
+            alert("Clave borrada de este navegador.");
+        }
+
+        function updateKeyStatusIndicator(key, usingDev = false) {
+            const label = document.getElementById('keyStatusLabel');
+            if (key) {
+                label.innerText = "🔒 Clave personalizada activa (LocalStorage)";
+                label.className = "key-indicator success";
+            } else if (usingDev) {
+                label.innerText = "⚡ Usando clave de desarrollo por defecto";
+                label.className = "key-indicator warning";
+            } else {
+                label.innerText = "⚠️ Sin clave almacenada (Configuración necesaria)";
+                label.className = "key-indicator danger";
+            }
+        }
+
+        function triggerFileInput(source) {
+            if (source === 'camera') {
+                document.getElementById('cameraInput').click();
+            } else {
+                document.getElementById('galleryInput').click();
+            }
+        }
+
+        async function handleImageLoaded(inputElement) {
+            const files = Array.from(inputElement.files || []);
+            if (!files.length) return;
+
+            const availableSlots = MAX_CV_PAGES - activeCvPages.length;
+            if (availableSlots <= 0) {
+                alert(`Ya tienes ${MAX_CV_PAGES} paginas cargadas. Limpia el CV si necesitas empezar de nuevo.`);
+                inputElement.value = "";
+                return;
+            }
+
+            const selectedFiles = files.slice(0, availableSlots);
+            if (files.length > availableSlots) {
+                alert(`Solo se agregaron ${availableSlots} imagenes. El limite actual es ${MAX_CV_PAGES} paginas por CV.`);
+            }
+
+            showLoader("Comprimiendo paginas del CV...", "Preparando las imagenes para ahorrar datos antes de enviarlas a Gemini.");
+
+            try {
+                for (const file of selectedFiles) {
+                    if (!file.type.startsWith('image/')) continue;
+                    const processedPage = await compressImageFile(file);
+                    activeCvPages.push(processedPage);
+                    activeBase64Image = processedPage.data;
+                }
+
+                if (!activeCvPages.length) {
+                    alert("No se detectaron imagenes validas para procesar.");
+                    return;
+                }
+
+                updateCapturePreview(activeCvPages[activeCvPages.length - 1]);
+                updateCaptureStatus();
+            } catch (error) {
+                console.error("Error preparando imagen:", error);
+                alert("No se pudo preparar la imagen: " + error.message);
+            } finally {
+                hideLoader();
+                inputElement.value = "";
+            }
+        }
+
+        function compressImageFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error("No se pudo leer el archivo seleccionado."));
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error("La imagen seleccionada no pudo abrirse."));
+                    img.onload = function() {
+                        const canvas = document.getElementById('hiddenCanvas');
+                        const ctx = canvas.getContext('2d');
+
+                        const maxDim = 1280;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height && width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                        const data = dataUrl.split(',')[1];
+                        const origSizeKB = (file.size / 1024).toFixed(1);
+                        const compSizeKB = ((data.length * 3) / 4 / 1024).toFixed(1);
+
+                        resolve({ dataUrl, data, width, height, origSizeKB, compSizeKB });
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateCapturePreview(page) {
+            const previewImg = document.getElementById('previewImage');
+            const previewPlaceholder = document.getElementById('previewPlaceholder');
+            const previewBox = document.getElementById('previewBox');
+            const compTag = document.getElementById('compressionTag');
+            const compDetails = document.getElementById('compressionDetails');
+
+            previewImg.src = page.dataUrl;
+            previewImg.style.display = 'block';
+            previewPlaceholder.style.display = 'none';
+            previewBox.classList.add('has-img');
+            compDetails.innerText = `Pagina ${activeCvPages.length}: ${page.width}x${page.height}px | Original: ${page.origSizeKB} KB | Optimizado: ${page.compSizeKB} KB`;
+            compTag.style.display = 'flex';
+        }
+
+        function updateCaptureStatus() {
+            const pageStatus = document.getElementById('pageStatus');
+            const pageCountLabel = document.getElementById('pageCountLabel');
+            const pageHintLabel = document.getElementById('pageHintLabel');
+            const digitizeBtn = document.getElementById('digitizeBtn');
+            const count = activeCvPages.length;
+
+            if (!pageStatus || !pageCountLabel || !pageHintLabel) return;
+
+            pageStatus.style.display = count > 0 ? 'flex' : 'none';
+            pageCountLabel.innerText = `${count} ${count === 1 ? 'pagina' : 'paginas'}`;
+            pageHintLabel.innerText = count < MAX_CV_PAGES
+                ? `Agrega otra foto si el CV tiene mas hojas. Maximo ${MAX_CV_PAGES}.`
+                : `Limite de ${MAX_CV_PAGES} paginas alcanzado.`;
+            digitizeBtn.disabled = count === 0;
+        }
+
+        // Función de Limpieza Rápida y Reajuste de Flujo (Nueva funcionalidad optimizada para reclutamiento en campo)
+        function executeQuickReset() {
+            activeBase64Image = null;
+            activeCvPages = [];
+
+            // Reiniciar caja de previsualización gráfica
+            const previewImg = document.getElementById('previewImage');
+            const previewPlaceholder = document.getElementById('previewPlaceholder');
+            const previewBox = document.getElementById('previewBox');
+            const compTag = document.getElementById('compressionTag');
+
+            previewImg.removeAttribute('src');
+            previewImg.style.display = 'none';
+            previewPlaceholder.style.display = 'flex';
+            previewBox.classList.remove('has-img');
+            compTag.style.display = 'none';
+
+            // Vaciar el área de texto y contadores
+            const textarea = document.getElementById('cvTextarea');
+            textarea.value = "";
+            
+            // Vaciar inputs nativos para permitir capturar la misma ruta de archivo si es necesario
+            document.getElementById('cameraInput').value = "";
+            document.getElementById('galleryInput').value = "";
+
+            updateCharCount();
+            updateCaptureStatus();
+        }
+
+        async function processCVImage() {
+            if (!activeCvPages.length) return;
+
+            let apiKey = getSavedApiKey();
+            if (!apiKey) {
+                apiKey = getInjectedDevKey();
+            }
+
+            if (!isUsableGeminiKey(apiKey)) {
+                alert("Debes ingresar tu clave Gemini API en el botón de engranaje ⚙️ de la esquina superior derecha.");
+                toggleConfigPanel();
+                return;
+            }
+
+            showLoader("Analizando Hoja de Vida...", "La IA multimodal de BioData está digitalizando el texto impreso. Esto toma aproximadamente 5 segundos.");
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                const imageParts = activeCvPages.map(page => ({
+                    inlineData: {
+                        mimeType: "image/jpeg",
+                        data: page.data
+                    }
+                }));
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                parts: [
+                                    {
+                                        text: "Actúa como un experto en extracción de datos de talento para PSICOSEV. Analiza la imagen de esta hoja de vida impresa mediante tus capacidades de visión artificial. Realiza un OCR avanzado y extrae TODO el texto de manera fiel, estructurada y limpia. No omitas nombres, datos de contacto, trayectoria laboral, competencias ni formación académica. Devuelve exclusivamente el texto plano extraído, estructurado cronológicamente y listo para procesamiento técnico"
+                                    },
+                                    {
+                                        text: `Si recibes varias imagenes, tratalas como paginas consecutivas del mismo CV en el orden cargado. Paginas recibidas: ${activeCvPages.length}.`
+                                    },
+                                    ...imageParts
+                                ]
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error?.message || "Fallo en la comunicación con la API de Google.");
+                }
+
+                const result = await response.json();
+                
+                const extractedText = result?.candidates?.[0]?.content?.parts
+                    ?.map(part => part.text || "")
+                    .join("\n")
+                    .trim();
+                if (!extractedText) {
+                    throw new Error("Gemini no devolvio texto. Intenta con una foto mas clara o revisa la clave API.");
+                }
+                
+                const textarea = document.getElementById('cvTextarea');
+                textarea.value = extractedText;
+                
+                updateCharCount();
+                alert("Hoja de vida digitalizada con éxito.");
+
+            } catch (error) {
+                console.error("Error en digitalización:", error);
+                alert("Error durante la digitalización del CV: " + error.message);
+            } finally {
+                hideLoader();
+            }
+        }
+
+        function updateCharCount() {
+            const textarea = document.getElementById('cvTextarea');
+            const textVal = textarea.value;
+            const counter = document.getElementById('charCounter');
+            const submitBtn = document.getElementById('sendMailBtn');
+            
+            counter.innerText = `${textVal.length} caracteres`;
+            
+            if (textVal.trim().length > 0) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+            updateCaptureStatus();
+        }
+
+        function triggerEmailCompose() {
+            const textContent = document.getElementById('cvTextarea').value;
+            if (!textContent.trim()) return;
+
+            const recipient = "psicosevpty@gmail.com";
+            const subject = "[BioData-Móvil] Digitalización de Candidato";
+            
+            const mailtoUrl = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(textContent)}`;
+            window.location.href = mailtoUrl;
+        }
+
+        function showLoader(title, subtitle = "Conectando con la Inteligencia Artificial de PSICOSEV...") {
+            document.getElementById('loadingText').innerText = title;
+            document.querySelector('.loading-subtext').innerText = subtitle;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoader() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
